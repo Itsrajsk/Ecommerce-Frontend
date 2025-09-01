@@ -6,7 +6,7 @@ import { Button } from "@mui/material";
 
 const CartItem = () => {
   return (
-    <div className="p-5 shadow-lg rounded-lg border border-gray-300 mb-5">
+    <div className="mx-6 p-5 shadow-lg rounded-lg border border-gray-300 mb-5">
       <div className="flex items-center">
         <div className="w-[5rem] h-[5rem] lg:w-[9rem] lg:h-[9rem]">
           <img

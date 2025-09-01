@@ -1,6 +1,6 @@
 "use client";
 
-import { Fragment, useState } from "react";
+import React, { Fragment, useState, useEffect } from "react";
 import {
   Dialog,
   DialogBackdrop,
@@ -23,7 +23,12 @@ import {
   ShoppingBagIcon,
   XMarkIcon,
 } from "@heroicons/react/24/outline";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import AuthModal from "../../Auth/AuthModal";
+import { logout, getUser } from "../../../State/Auth/Action";
+import Avatar from "@mui/material/Avatar";
+import { deepPurple } from "@mui/material/colors";
 
 const navigation = {
   categories: [
@@ -155,20 +160,61 @@ const navigation = {
   ],
 };
 
-export default function Navigation() {
-  // All handlers and states from your screenshots
+// Simple error boundary component
+class ErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false };
+  }
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+  componentDidCatch(error, errorInfo) {
+    console.error("ErrorBoundary caught an error", error, errorInfo);
+  }
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="p-4 text-center text-red-600">
+          Something went wrong. Please try again later.
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
+function Navigation() {
   const [open, setOpen] = useState(false);
   const [openAuthModal, setOpenAuthModal] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const openUserMenu = Boolean(anchorEl);
-  const jwt = localStorage.getItem("jwt");
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const jwt = localStorage.getItem("jwt");
+  const auth = useSelector((store) => store.auth);
+  const location = useLocation();
+
+  useEffect(() => {
+    if (jwt) {
+      dispatch(getUser(jwt));
+    }
+  }, [jwt, auth.jwt, dispatch]);
+
+  useEffect(() => {
+    if (auth.user) {
+      handleClose();
+    }
+    if (location.pathname === "/login" || location.pathname === "/register") {
+      navigate(-1);
+    }
+  }, [auth.user, location.pathname, navigate]);
 
   const handleUserClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
 
-  const handleCloseUserMenu = (event) => {
+  const handleCloseUserMenu = () => {
     setAnchorEl(null);
   };
 
@@ -183,6 +229,11 @@ export default function Navigation() {
   const handleCategoryClick = (category, section, item, close) => {
     navigate(`/${category.id}/${section.id}/${item.id}`);
     close();
+  };
+
+  const handleLogout = () => {
+    dispatch(logout());
+    handleCloseUserMenu();
   };
 
   return (
@@ -325,19 +376,9 @@ export default function Navigation() {
           </DialogPanel>
         </div>
       </Dialog>
-      {/* Auth Modal (example usage) */}
+      {/* Auth Modal */}
       {openAuthModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-30">
-          <div className="bg-white rounded-lg p-6 shadow-xl min-w-[300px]">
-            <p className="font-bold mb-2">Authentication Modal</p>
-            <button
-              className="mt-2 px-4 py-2 bg-indigo-600 text-white rounded"
-              onClick={handleClose}
-            >
-              Close
-            </button>
-          </div>
-        </div>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-opacity-900"></div>
       )}
       <header className="relative bg-white">
         <nav
@@ -384,7 +425,6 @@ export default function Navigation() {
                         transition
                         className="absolute inset-x-0 top-full z-20 w-full bg-white text-sm text-gray-500 transition data-closed:opacity-0 data-enter:duration-200 data-enter:ease-out data-leave:duration-150 data-leave:ease-in"
                       >
-                        {/* Presentational element used to render the bottom shadow, if we put the shadow on the actual panel it pokes out the top, so we use this shorter element to hide the top of the shadow */}
                         <div
                           aria-hidden="true"
                           className="absolute inset-0 top-1/2 bg-white shadow-sm"
@@ -471,90 +511,95 @@ export default function Navigation() {
                   ))}
                 </div>
               </PopoverGroup>
-              <div className="ml-auto flex items-center">
-                <div className="hidden lg:flex lg:flex-1 lg:items-center lg:justify-end lg:space-x-6">
-                  <a
-                    href="#"
-                    className="text-sm font-medium text-gray-700 hover:text-gray-800"
+
+              {/* RIGHT SIDE USER CONTROLS */}
+              <div className="ml-auto flex lg:flex-1 lg:items-center lg:justify-end lg:space-x-6 items-center">
+                {auth.user?.firstName ? (
+                  <div>
+                    {/* Avatar */}
+                    <Menu as="div" className="relative">
+                      <Menu.Button className="flex items-center text-gray-700 hover:text-gray-800 focus:outline-none">
+                        <Avatar
+                          sx={{
+                            bgcolor: deepPurple[500],
+                            color: "white",
+                            cursor: "pointer",
+                            width: 32,
+                            height: 32,
+                            fontSize: 16,
+                            fontWeight: 700,
+                          }}
+                          onClick={handleUserClick}
+                        >
+                          {auth.user.firstName?.[0]?.toUpperCase() || "?"}
+                        </Avatar>
+                        <span className="ml-3 text-sm font-medium">
+                          {auth.user.firstName}
+                        </span>
+                        <span className="sr-only">Open user menu</span>
+                      </Menu.Button>
+                      <Transition
+                        as={Fragment}
+                        enter="transition ease-out duration-100"
+                        enterFrom="transform opacity-0 scale-95"
+                        enterTo="transform opacity-100 scale-100"
+                        leave="transition ease-in duration-75"
+                        leaveFrom="transform opacity-100 scale-100"
+                        leaveTo="transform opacity-0 scale-95"
+                      >
+                        <Menu.Items className="absolute right-0 mt-2 w-48 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-50">
+                          <div className="py-1">
+                            <Menu.Item>
+                              {({ active }) => (
+                                <a
+                                  href="#"
+                                  className={`${
+                                    active ? "bg-gray-100" : ""
+                                  } block px-4 py-2 text-sm text-gray-700`}
+                                >
+                                  Profile
+                                </a>
+                              )}
+                            </Menu.Item>
+                            <Menu.Item>
+                              {({ active }) => (
+                                <a
+                                  href="#"
+                                  onClick={() => navigate("/account/order")}
+                                  className={`${
+                                    active ? "bg-gray-100" : ""
+                                  } block px-4 py-2 text-sm text-gray-700`}
+                                >
+                                  My Orders
+                                </a>
+                              )}
+                            </Menu.Item>
+                            <Menu.Item>
+                              {({ active }) => (
+                                <button
+                                  onClick={handleLogout}
+                                  className={`${
+                                    active ? "bg-gray-100" : ""
+                                  } block w-full text-left px-4 py-2 text-sm text-gray-700`}
+                                >
+                                  Log out
+                                </button>
+                              )}
+                            </Menu.Item>
+                          </div>
+                        </Menu.Items>
+                      </Transition>
+                    </Menu>
+                  </div>
+                ) : (
+                  <button
                     onClick={handleOpen}
-                  >
-                    Sign in
-                  </a>
-                  <span aria-hidden="true" className="h-6 w-px bg-gray-200" />
-                  <a
-                    href="#"
                     className="text-sm font-medium text-gray-700 hover:text-gray-800"
-                    onClick={handleOpen}
                   >
-                    Create account
-                  </a>
-                </div>
-                <div className="hidden lg:flex lg:items-center lg:ml-8">
-                  <Menu as="div" className="relative">
-                    <Menu.Button
-                      className="flex items-center text-gray-700 hover:text-gray-800 focus:outline-none"
-                      onClick={handleUserClick}
-                    >
-                      <img
-                        className="h-8 w-8 rounded-full object-cover"
-                        src="https://images.unsplash.com/vector-1749124647885-49713a8d2750?q=80&w=880&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                        alt="User Avatar"
-                      />
-                      <span className="ml-3 text-sm font-medium">Raj</span>
-                      <span className="sr-only">Open user menu</span>
-                    </Menu.Button>
-                    <Transition
-                      as={Fragment}
-                      enter="transition ease-out duration-100"
-                      enterFrom="transform opacity-0 scale-95"
-                      enterTo="transform opacity-100 scale-100"
-                      leave="transition ease-in duration-75"
-                      leaveFrom="transform opacity-100 scale-100"
-                      leaveTo="transform opacity-0 scale-95"
-                    >
-                      <Menu.Items className="absolute right-0 mt-2 w-48 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-50">
-                        <div className="py-1">
-                          <Menu.Item>
-                            {({ active }) => (
-                              <a
-                                href="#"
-                                className={`${
-                                  active ? "bg-gray-100" : ""
-                                } block px-4 py-2 text-sm text-gray-700`}
-                              >
-                                Profile
-                              </a>
-                            )}
-                          </Menu.Item>
-                          <Menu.Item onClick={() => navigate("/account/order")}>
-                            {({ active }) => (
-                              <a
-                                href="#"
-                                className={`${
-                                  active ? "bg-gray-100" : ""
-                                } block px-4 py-2 text-sm text-gray-700`}
-                              >
-                                My Orders
-                              </a>
-                            )}
-                          </Menu.Item>
-                          <Menu.Item>
-                            {({ active }) => (
-                              <a
-                                href="#"
-                                className={`${
-                                  active ? "bg-gray-100" : ""
-                                } block px-4 py-2 text-sm text-gray-700`}
-                              >
-                                Sign out
-                              </a>
-                            )}
-                          </Menu.Item>
-                        </div>
-                      </Menu.Items>
-                    </Transition>
-                  </Menu>
-                </div>
+                    Signin
+                  </button>
+                )}
+
                 {/* Search */}
                 <div className="flex lg:ml-6">
                   <a href="#" className="p-2 text-gray-400 hover:text-gray-500">
@@ -579,10 +624,20 @@ export default function Navigation() {
                   </a>
                 </div>
               </div>
+              {/* END USER CONTROLS */}
             </div>
           </div>
         </nav>
       </header>
+      <AuthModal handleClose={handleClose} open={openAuthModal} />
     </div>
+  );
+}
+
+export default function NavigationWithErrorBoundary(props) {
+  return (
+    <ErrorBoundary>
+      <Navigation {...props} />
+    </ErrorBoundary>
   );
 }

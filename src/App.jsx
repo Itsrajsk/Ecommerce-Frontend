@@ -9,7 +9,7 @@ import Checkout from "./customer/components/Checkout/Checkout";
 import Order from "./customer/components/Order/Order";
 import OrderDetails from "./customer/components/Order/OrderDetails";
 import { Route, Routes } from "react-router-dom";
-import CustomerRouters from "./customer/components/Routers/CustomerRouters";
+import CustomerRouters from "./Routers/CustomerRouters";
 
 function App() {
   return (

@@ -1,14 +1,14 @@
 import React from "react";
 import { Route, Routes } from "react-router-dom";
-import HomePage from "../../pages/HomePage/HomePage";
-import Cart from "../Cart/cart";
-import Navigation from "../Navigation/Navigation";
-import Footer from "../Footer/Footer";
-import Product from "../Product/Product";
-import ProductDetails from "../ProductDetails/ProductDetails";
-import Order from "../Order/Order";
-import OrderDetails from "../Order/OrderDetails";
-import Checkout from "../Checkout/Checkout";
+import HomePage from "../customer/pages/HomePage/HomePage";
+import Cart from "../customer/components/Cart/cart";
+import Navigation from "../customer/components/Navigation/Navigation";
+import Footer from "../customer/components/Footer/Footer";
+import Product from "../customer/components/Product/Product";
+import ProductDetails from "../customer/components/ProductDetails/ProductDetails";
+import Order from "../customer/components/Order/Order";
+import OrderDetails from "../customer/components/Order/OrderDetails";
+import Checkout from "../customer/components/Checkout/Checkout";
 
 const CustomerRouters = () => {
   return (
@@ -17,6 +17,8 @@ const CustomerRouters = () => {
         <Navigation />
       </div>
       <Routes>
+        <Route path="/login" element={<HomePage />}></Route>
+        <Route path="/register" element={<HomePage />}></Route>
         <Route path="/" element={<HomePage />}></Route>
         <Route path="/cart" element={<Cart />}></Route>
         <Route
