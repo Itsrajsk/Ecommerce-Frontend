@@ -1,5 +1,4 @@
 "use client";
-
 import React, { Fragment, useState, useEffect } from "react";
 import {
   Dialog,
@@ -58,38 +57,38 @@ const navigation = {
           id: "clothing",
           name: "Clothing",
           items: [
-            { name: "Tops", href: "#" },
-            { name: "Dresses", href: "#" },
-            { name: "Pants", href: "#" },
-            { name: "Denim", href: "#" },
-            { name: "Sweaters", href: "#" },
-            { name: "T-Shirts", href: "#" },
-            { name: "Jackets", href: "#" },
-            { name: "Activewear", href: "#" },
-            { name: "Browse All", href: "#" },
+            { id: "tops", name: "Tops", href: "#" },
+            { id: "dresses", name: "Dresses", href: "#" },
+            { id: "pants", name: "Pants", href: "#" },
+            { id: "denim", name: "Denim", href: "#" },
+            { id: "sweaters", name: "Sweaters", href: "#" },
+            { id: "t-shirts", name: "T-Shirts", href: "#" },
+            { id: "jackets", name: "Jackets", href: "#" },
+            { id: "activewear", name: "Activewear", href: "#" },
+            { id: "browse-all", name: "Browse All", href: "#" },
           ],
         },
         {
           id: "accessories",
           name: "Accessories",
           items: [
-            { name: "Watches", href: "#" },
-            { name: "Wallets", href: "#" },
-            { name: "Bags", href: "#" },
-            { name: "Sunglasses", href: "#" },
-            { name: "Hats", href: "#" },
-            { name: "Belts", href: "#" },
+            { id: "watches", name: "Watches", href: "#" },
+            { id: "wallets", name: "Wallets", href: "#" },
+            { id: "bags", name: "Bags", href: "#" },
+            { id: "sunglasses", name: "Sunglasses", href: "#" },
+            { id: "hats", name: "Hats", href: "#" },
+            { id: "belts", name: "Belts", href: "#" },
           ],
         },
         {
           id: "brands",
           name: "Brands",
           items: [
-            { name: "Full Nelson", href: "#" },
-            { name: "My Way", href: "#" },
-            { name: "Re-Arranged", href: "#" },
-            { name: "Counterfeit", href: "#" },
-            { name: "Significant Other", href: "#" },
+            { id: "full-nelson", name: "Full Nelson", href: "#" },
+            { id: "my-way", name: "My Way", href: "#" },
+            { id: "re-arranged", name: "Re-Arranged", href: "#" },
+            { id: "counterfeit", name: "Counterfeit", href: "#" },
+            { id: "significant-other", name: "Significant Other", href: "#" },
           ],
         },
       ],
@@ -120,35 +119,36 @@ const navigation = {
           id: "clothing",
           name: "Clothing",
           items: [
-            { name: "Tops", href: "#" },
-            { name: "Pants", href: "#" },
-            { name: "Sweaters", href: "#" },
-            { name: "T-Shirts", href: "#" },
-            { name: "Jackets", href: "#" },
-            { name: "Activewear", href: "#" },
-            { name: "Browse All", href: "#" },
+            { id: "mens_kurta", name: "mens_kurta", href: "#" },
+            { id: "tops", name: "Tops", href: "#" },
+            { id: "pants", name: "Pants", href: "#" },
+            { id: "sweaters", name: "Sweaters", href: "#" },
+            { id: "t-shirts", name: "T-Shirts", href: "#" },
+            { id: "jackets", name: "Jackets", href: "#" },
+            { id: "activewear", name: "Activewear", href: "#" },
+            { id: "browse-all", name: "Browse All", href: "#" },
           ],
         },
         {
           id: "accessories",
           name: "Accessories",
           items: [
-            { name: "Watches", href: "#" },
-            { name: "Wallets", href: "#" },
-            { name: "Bags", href: "#" },
-            { name: "Sunglasses", href: "#" },
-            { name: "Hats", href: "#" },
-            { name: "Belts", href: "#" },
+            { id: "watches", name: "Watches", href: "#" },
+            { id: "wallets", name: "Wallets", href: "#" },
+            { id: "bags", name: "Bags", href: "#" },
+            { id: "sunglasses", name: "Sunglasses", href: "#" },
+            { id: "hats", name: "Hats", href: "#" },
+            { id: "belts", name: "Belts", href: "#" },
           ],
         },
         {
           id: "brands",
           name: "Brands",
           items: [
-            { name: "Re-Arranged", href: "#" },
-            { name: "Counterfeit", href: "#" },
-            { name: "Full Nelson", href: "#" },
-            { name: "My Way", href: "#" },
+            { id: "re-arranged", name: "Re-Arranged", href: "#" },
+            { id: "counterfeit", name: "Counterfeit", href: "#" },
+            { id: "full-nelson", name: "Full Nelson", href: "#" },
+            { id: "my-way", name: "My Way", href: "#" },
           ],
         },
       ],
@@ -511,7 +511,6 @@ function Navigation() {
                   ))}
                 </div>
               </PopoverGroup>
-
               {/* RIGHT SIDE USER CONTROLS */}
               <div className="ml-auto flex lg:flex-1 lg:items-center lg:justify-end lg:space-x-6 items-center">
                 {auth.user?.firstName ? (
@@ -599,7 +598,6 @@ function Navigation() {
                     Signin
                   </button>
                 )}
-
                 {/* Search */}
                 <div className="flex lg:ml-6">
                   <a href="#" className="p-2 text-gray-400 hover:text-gray-500">
