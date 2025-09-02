@@ -398,7 +398,13 @@ function Navigation() {
               </button>
               {/* Logo */}
               <div className="ml-4 flex lg:ml-0">
-                <a href="#">
+                <a
+                  href="/"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    navigate("/");
+                  }}
+                >
                   <span className="sr-only">Your Company</span>
                   <img
                     alt=""

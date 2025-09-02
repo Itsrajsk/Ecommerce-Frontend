@@ -47,25 +47,30 @@ export const removeCartItem = (cartItemId) => async (dispatch) => {
   try {
     const { data } = await api.delete(`/api/cart_items/${cartItemId}`);
     console.log("Updated cart after remove:", data);
-    dispatch({ type: REMOVE_CART_ITEM_SUCCESS, payload: data }); // ✅ send updated cart
+    dispatch({
+      type: REMOVE_CART_ITEM_SUCCESS,
+      payload: data,
+      meta: { itemId: cartItemId },  // <-- Add this
+    });
   } catch (error) {
     dispatch({ type: REMOVE_CART_ITEM_FAILURE, payload: error.message });
   }
 };
 
 // Update cart item
-export const updateCartItem =
-  (cartItemId, dataToUpdate) => async (dispatch) => {
-    dispatch({ type: UPDATE_CART_ITEM_REQUEST });
+export const updateCartItem = (cartItemId, dataToUpdate) => async (dispatch) => {
+  dispatch({ type: UPDATE_CART_ITEM_REQUEST });
 
-    try {
-      const { data } = await api.put(
-        `/api/cart_items/${cartItemId}`,
-        dataToUpdate
-      );
-      console.log("Updated cart after update:", data);
-      dispatch({ type: UPDATE_CART_ITEM_SUCCESS, payload: data }); // ✅ send updated cart
-    } catch (error) {
-      dispatch({ type: UPDATE_CART_ITEM_FAILURE, payload: error.message });
-    }
-  };
+  try {
+    const { data } = await api.put(`/api/cart_items/${cartItemId}`, dataToUpdate);
+    console.log("Updated cart after update:", data);
+    dispatch({
+      type: UPDATE_CART_ITEM_SUCCESS,
+      payload: data,
+      meta: { itemId: cartItemId }, // <-- Add this
+    });
+  } catch (error) {
+    dispatch({ type: UPDATE_CART_ITEM_FAILURE, payload: error.message });
+  }
+};
+

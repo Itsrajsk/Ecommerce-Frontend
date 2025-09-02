@@ -25,7 +25,7 @@ const CartItem = ({ item, onRemove, onUpdate }) => {
       <div className="flex items-center">
         <div className="w-[5rem] h-[5rem] lg:w-[9rem] lg:h-[9rem]">
           <img
-            className="w-full h-full object-cover object-top"
+            className="w-full h-full object-cover object-top rounded-lg shadow-lg shadow-gray-300"
             src={product.imageUrl}
             alt={product.title}
           />
