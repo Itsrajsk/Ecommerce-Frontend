@@ -8,6 +8,7 @@ import Typography from "@mui/material/Typography";
 import { useLocation, useNavigate } from "react-router-dom";
 import DeliveryAddressForm from "./DeliveryAddressForm";
 import OrderSummary from "./OrderSummary";
+import AddressCard from "../AddressCard/AddressCard";
 
 const steps = ["Login", "Delivery Address", "Order Summary", "Payment"];
 
@@ -20,7 +21,53 @@ export default function Checkout() {
 
   const [activeStep, setActiveStep] = React.useState(queryStep);
 
-  // Keep URL in sync when activeStep changes
+  // Saved address shown left and in summary (initialize empty)
+  const [address, setAddress] = React.useState({
+    firstName: "",
+    lastName: "",
+    address: "",
+    city: "",
+    state: "",
+    zip: "",
+    phoneNumber: "",
+  });
+
+  // Independent editing form state - initially empty
+  const [editingAddress, setEditingAddress] = React.useState({
+    firstName: "",
+    lastName: "",
+    address: "",
+    city: "",
+    state: "",
+    zip: "",
+    phoneNumber: "",
+  });
+
+  // Load saved address from localStorage on mount
+  React.useEffect(() => {
+    const saved = localStorage.getItem("checkoutAddress");
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      setAddress(parsed);
+    }
+  }, []);
+
+  // Save updated address to localStorage & React state
+  const handleSaveAddress = (newAddress) => {
+    setAddress(newAddress);
+    localStorage.setItem("checkoutAddress", JSON.stringify(newAddress));
+  };
+
+  React.useEffect(() => {
+    const qsStep = parseInt(
+      new URLSearchParams(location.search).get("step") || "0",
+      10
+    );
+    if (qsStep !== activeStep) {
+      setActiveStep(qsStep);
+    }
+  }, [location.search]);
+
   React.useEffect(() => {
     navigate(`?step=${activeStep}`, { replace: true });
   }, [activeStep, navigate]);
@@ -67,8 +114,16 @@ export default function Checkout() {
             </Box>
 
             <div>
-              {activeStep === 1 && <DeliveryAddressForm />}
-              {activeStep === 2 && <OrderSummary />}
+              {activeStep === 1 && (
+                <DeliveryAddressForm
+                  address={address}
+                  editingAddress={editingAddress}
+                  setEditingAddress={setEditingAddress}
+                  setAddress={handleSaveAddress}
+                  onDeliverHere={handleNext}
+                />
+              )}
+              {activeStep === 2 && <OrderSummary address={address} />}
             </div>
           </React.Fragment>
         )}

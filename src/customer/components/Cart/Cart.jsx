@@ -16,7 +16,16 @@ const Cart = () => {
   const { cart, cartItems, loading } = useSelector((state) => state.cart);
 
   const handleCheckout = () => {
-    navigate("/checkout?step=2");
+    if (location.pathname === "/cart") {
+      // From cart page, go to checkout step 1
+      navigate("/checkout?step=1");
+    } else if (location.pathname === "/checkout") {
+      // On checkout page (like step=2), go to payment step 3
+      navigate("/checkout?step=3");
+    } else {
+      // Default fallback (optional)
+      navigate("/checkout?step=1");
+    }
   };
 
   useEffect(() => {
