@@ -1,6 +1,9 @@
 import axios from "axios";
 
-export const API_BASE_URL = "https://ecommerce-backend-production-3ebf.up.railway.app";
+const API_BASE_URL =
+  process.env.NODE_ENV === "production"
+    ? "https://ecommerce-backend-production-ff66.up.railway.app"
+    : "http://localhost:8080";
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -21,4 +24,4 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-export { api };
+export { api, API_BASE_URL };
