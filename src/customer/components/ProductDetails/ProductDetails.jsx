@@ -87,11 +87,12 @@ export default function ProductDetails() {
   const { products } = useSelector((store) => store);
 
   const handleAddToCart = () => {
-    const data = { productId: params.productId, size: selectedSize.name };
+    const data = { productId: params.productId, size: selectedSize }; // remove .name
     console.log("data - ", data);
     dispatch(addItemToCart(data));
     navigate("/cart");
   };
+
 
   useEffect(() => {
     dispatch(findProductsById(params.productId));
@@ -224,13 +225,15 @@ export default function ProductDetails() {
                           className="group relative flex items-center justify-center rounded-md border border-gray-300 bg-white p-3 has-checked:border-indigo-600 has-checked:bg-indigo-600 has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-indigo-600 has-disabled:border-gray-400 has-disabled:bg-gray-200 has-disabled:opacity-25"
                         >
                           <input
-                            defaultValue={size.id}
-                            defaultChecked={size === product.sizes[2]}
-                            name="size"
                             type="radio"
+                            name="size"
+                            value={size.name}
+                            checked={selectedSize === size.name}
+                            onChange={() => setSelectedSize(size.name)}
                             disabled={!size.inStock}
                             className="absolute inset-0 appearance-none focus:outline-none disabled:cursor-not-allowed"
                           />
+
                           <span className="text-sm font-medium text-gray-900 uppercase group-has-checked:text-white">
                             {size.name}
                           </span>
