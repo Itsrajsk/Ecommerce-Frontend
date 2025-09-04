@@ -1,6 +1,6 @@
 import React from "react";
 import AddressCard from "../AddressCard/AddressCard";
-import Cart from "../Cart/cart";
+import Cart from "../Cart/Cart";
 
 const OrderSummary = ({ address }) => {
   if (!address) return <div>Loading...</div>;
