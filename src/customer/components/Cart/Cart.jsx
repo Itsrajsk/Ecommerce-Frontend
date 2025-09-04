@@ -1,29 +1,45 @@
 import React, { useEffect } from "react";
 import CartItem from "./CartItem";
 import { Button } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
   getCart,
   removeCartItem,
   updateCartItem,
 } from "../../../State/Cart/Action";
+import { createPayment } from "../../../State/Payment/Action";
+import { getOrderById } from "../../../State/Order/Action";
 
 const Cart = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const location = useLocation();
+  const { order } = useSelector((store) => store);
+  const searchParams = new URLSearchParams(location.search);
+  const orderId = searchParams.get("orderId");
 
   const { cart, cartItems, loading } = useSelector((state) => state.cart);
 
+  useEffect(() => {
+    dispatch(getOrderById(orderId));
+  }, [orderId]);
+
   const handleCheckout = () => {
     if (location.pathname === "/cart") {
-      // From cart page, go to checkout step 1
       navigate("/checkout?step=1");
     } else if (location.pathname === "/checkout") {
-      // On checkout page (like step=2), go to payment step 3
-      navigate("/checkout?step=3");
+      const step = new URLSearchParams(location.search).get("step");
+      if (step === "2") {
+        // 🚀 Call Razorpay here
+        dispatch(createPayment(orderId));
+      } else {
+        // Default: go to next step
+        navigate("/checkout?step=3&orderId=" + orderId);
+      }
+    } else if (location.pathname === "/payment") {
+      dispatch(createPayment(orderId));
     } else {
-      // Default fallback (optional)
       navigate("/checkout?step=1");
     }
   };

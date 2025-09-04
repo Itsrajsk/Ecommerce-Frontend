@@ -10,11 +10,12 @@ const AddressCard = ({ address }) => {
           {address.firstName} {address.lastName}
         </p>
         <p>
-          {address.address}, {address.city}, {address.state}, {address.zip}
+          {address.streetAddress}, {address.city}, {address.state},{" "}
+          {address.zipCode}
         </p>
         <div className="space-y-1">
           <p className="font-semibold">Phone Number</p>
-          <p>{address.phoneNumber}</p>
+          <p>{address.mobile}</p>
         </div>
       </div>
     </div>

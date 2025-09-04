@@ -8,30 +8,49 @@ import {
 } from "./ActionType";
 import { api } from "./../../config/apiConfig";
 
+// ✅ Create new order
 export const createOrder = (reqData) => async (dispatch) => {
   dispatch({ type: CREATE_ORDER_REQUEST });
   try {
-    // Send the whole object (not just address)
     const { data } = await api.post(`/api/orders/`, reqData);
-    console.log("created order - ", data);
+    console.log("✅ created order:", data);
 
-    dispatch({ type: CREATE_ORDER_SUCCESS, payload: data });
-    return data; // 👈 return so Checkout can use it
+    // If backend sends { order: {...} }, unwrap it
+    const orderData = data?.order ? data.order : data;
+
+    dispatch({ type: CREATE_ORDER_SUCCESS, payload: orderData });
+    return orderData; // 👈 useful for Checkout flow
   } catch (error) {
-    console.log("catch error : ", error);
-    dispatch({ type: CREATE_ORDER_FAILURE, payload: error.message });
+    console.error("❌ createOrder error:", error);
+    dispatch({
+      type: CREATE_ORDER_FAILURE,
+      payload: error.response?.data?.message || error.message,
+    });
     return null;
   }
 };
 
+// ✅ Fetch order by ID
 export const getOrderById = (orderId) => async (dispatch) => {
+  if (!orderId) {
+    console.error("❌ getOrderById called with null/undefined orderId");
+    return;
+  }
+
   dispatch({ type: GET_ORDER_BY_ID_REQUEST });
   try {
     const { data } = await api.get(`/api/orders/${orderId}`);
-    console.log("order by id ", data);
-    dispatch({ type: GET_ORDER_BY_ID_SUCCESS, payload: data });
+    console.log("📦 order by id:", data);
+
+    // If backend sends { order: {...} }, unwrap it
+    const orderData = data?.order ? data.order : data;
+
+    dispatch({ type: GET_ORDER_BY_ID_SUCCESS, payload: orderData });
   } catch (error) {
-    console.log("catch error : ", error);
-    dispatch({ type: GET_ORDER_BY_ID_FAILURE, payload: error.message });
+    console.error("❌ getOrderById error:", error);
+    dispatch({
+      type: GET_ORDER_BY_ID_FAILURE,
+      payload: error.response?.data?.message || error.message,
+    });
   }
 };

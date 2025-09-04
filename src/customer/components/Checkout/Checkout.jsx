@@ -1,3 +1,4 @@
+// Checkout.jsx
 import * as React from "react";
 import Box from "@mui/material/Box";
 import Stepper from "@mui/material/Stepper";
@@ -8,7 +9,8 @@ import Typography from "@mui/material/Typography";
 import { useLocation, useNavigate } from "react-router-dom";
 import DeliveryAddressForm from "./DeliveryAddressForm";
 import OrderSummary from "./OrderSummary";
-import AddressCard from "../AddressCard/AddressCard";
+import { createOrder } from "./../../../State/Order/Action";
+import { useDispatch, useSelector } from "react-redux";
 
 const steps = ["Login", "Delivery Address", "Order Summary", "Payment"];
 
@@ -19,44 +21,11 @@ export default function Checkout() {
   const querySearch = new URLSearchParams(location.search);
   const queryStep = parseInt(querySearch.get("step") || "0", 10);
 
+  const dispatch = useDispatch();
+  const [orderId, setOrderId] = React.useState(null);
+  const { cartItems } = useSelector((state) => state.cart);
+
   const [activeStep, setActiveStep] = React.useState(queryStep);
-
-  // Saved address shown left and in summary (initialize empty)
-  const [address, setAddress] = React.useState({
-    firstName: "",
-    lastName: "",
-    address: "",
-    city: "",
-    state: "",
-    zip: "",
-    phoneNumber: "",
-  });
-
-  // Independent editing form state - initially empty
-  const [editingAddress, setEditingAddress] = React.useState({
-    firstName: "",
-    lastName: "",
-    address: "",
-    city: "",
-    state: "",
-    zip: "",
-    phoneNumber: "",
-  });
-
-  // Load saved address from localStorage on mount
-  React.useEffect(() => {
-    const saved = localStorage.getItem("checkoutAddress");
-    if (saved) {
-      const parsed = JSON.parse(saved);
-      setAddress(parsed);
-    }
-  }, []);
-
-  // Save updated address to localStorage & React state
-  const handleSaveAddress = (newAddress) => {
-    setAddress(newAddress);
-    localStorage.setItem("checkoutAddress", JSON.stringify(newAddress));
-  };
 
   React.useEffect(() => {
     const qsStep = parseInt(
@@ -69,8 +38,12 @@ export default function Checkout() {
   }, [location.search]);
 
   React.useEffect(() => {
-    navigate(`?step=${activeStep}`, { replace: true });
-  }, [activeStep, navigate]);
+    if (orderId) {
+      navigate(`?step=${activeStep}&orderId=${orderId}`, { replace: true });
+    } else {
+      navigate(`?step=${activeStep}`, { replace: true });
+    }
+  }, [activeStep, orderId, navigate]);
 
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -79,6 +52,25 @@ export default function Checkout() {
   const handleBack = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
+
+  const [order, setOrder] = React.useState(null);
+
+  const handleDeliverHere = async (finalAddress) => {
+    if (!cartItems?.length) {
+      alert("Cart is empty!");
+      return;
+    }
+
+    // Send only the address object, not wrapped in another object
+    const newOrder = await dispatch(createOrder(finalAddress));
+
+    if (newOrder && newOrder.id) {
+      setOrder(newOrder); // store full order for later steps
+      setOrderId(newOrder.id);
+      setActiveStep(2); // go to order summary step
+    }
+  };
+
 
   return (
     <div className="px-10 lg:px-20 py-5">
@@ -115,15 +107,14 @@ export default function Checkout() {
 
             <div>
               {activeStep === 1 && (
-                <DeliveryAddressForm
-                  address={address}
-                  editingAddress={editingAddress}
-                  setEditingAddress={setEditingAddress}
-                  setAddress={handleSaveAddress}
-                  onDeliverHere={handleNext}
+                <DeliveryAddressForm onDeliverHere={handleDeliverHere} />
+              )}
+              {activeStep === 2 && (
+                <OrderSummary
+                  address={order?.shippingAddress}
+                  orderId={order?.id}
                 />
               )}
-              {activeStep === 2 && <OrderSummary address={address} />}
             </div>
           </React.Fragment>
         )}
