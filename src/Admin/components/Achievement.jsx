@@ -28,10 +28,13 @@ const Achievement = () => {
       >
         {/* Top Section */}
         <div>
-          <Typography variant="h6" sx={{ letterSpacing: ".25px" }}>
+          <Typography
+            variant="h5"
+            sx={{  letterSpacing: "1.2px" }}
+          >
             Ecommerce
           </Typography>
-          <Typography variant="body2" sx={{ mb: 1 }}>
+          <Typography variant="body1" sx={{ mb: 1 }}>
             Congratulations 🎉
           </Typography>
           <Typography variant="h5" sx={{ my: 2.5, fontWeight: "bold" }}>
