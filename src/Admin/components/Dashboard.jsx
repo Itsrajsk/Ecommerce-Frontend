@@ -1,6 +1,7 @@
 import React from "react";
 import Achievement from "./Achievement";
 import MonthlyOverview from "./MonthlyOverview";
+import ProductsTable from "./ProductsTable";
 
 const Dashboard = () => {
   return (
@@ -15,6 +16,11 @@ const Dashboard = () => {
         <div className="w-2/3">
           <MonthlyOverview />
         </div>
+      </div>
+
+      {/* Full width section for ProductsTable */}
+      <div className="w-full mt-6">
+        <ProductsTable />
       </div>
     </div>
   );
