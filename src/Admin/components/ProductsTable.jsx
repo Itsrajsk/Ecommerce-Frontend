@@ -6,7 +6,7 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import React, { useEffect } from "react";
-import { findProducts } from "../../State/Product/Action";
+import { deleteProduct, findProducts } from "../../State/Product/Action";
 import { useDispatch, useSelector } from "react-redux";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
@@ -16,6 +16,10 @@ import CardHeader from "@mui/material/CardHeader";
 const ProductsTable = () => {
   const { products } = useSelector((store) => store);
   console.log("products --> ", products);
+
+  const handleProductDelete = (productId) => {
+    dispatch(deleteProduct(productId));
+  };
 
   const dispatch = useDispatch();
   useEffect(() => {
@@ -34,7 +38,7 @@ const ProductsTable = () => {
 
     console.log("Dispatching findProducts with data:", data);
     dispatch(findProducts(data));
-  }, []);
+  }, [products.deletedProduct]);
 
   return (
     <div className="p-5">
@@ -85,6 +89,7 @@ const ProductsTable = () => {
                   <TableCell>{item.quantity}</TableCell>
                   <TableCell>
                     <Button
+                      onClick={() => handleProductDelete(item.id)}
                       sx={{ width: "20px" }}
                       variant="outlined"
                       color="error"
