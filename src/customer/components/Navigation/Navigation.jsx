@@ -57,8 +57,9 @@ const navigation = {
           id: "clothing",
           name: "Clothing",
           items: [
-            { id: "tops", name: "Tops", href: "#" },
-            { id: "dresses", name: "Dresses", href: "#" },
+            { id: "womens_kurti", name: "Kurti", href: "#" },
+            { id: "womens_tops", name: "Tops", href: "#" },
+            { id: "womens_dresses", name: "Dresses", href: "#" },
             { id: "pants", name: "Pants", href: "#" },
             { id: "denim", name: "Denim", href: "#" },
             { id: "sweaters", name: "Sweaters", href: "#" },
@@ -119,7 +120,7 @@ const navigation = {
           id: "clothing",
           name: "Clothing",
           items: [
-            { id: "mens_kurta", name: "mens_kurta", href: "#" },
+            { id: "mens_kurta", name: "Mens Kurta", href: "#" },
             { id: "tops", name: "Tops", href: "#" },
             { id: "pants", name: "Pants", href: "#" },
             { id: "sweaters", name: "Sweaters", href: "#" },
