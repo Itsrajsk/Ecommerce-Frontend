@@ -392,7 +392,7 @@ export default function Product() {
               </div>
 
               {/* Pagination */}
-              <div className="w-[20rem] mx-100">
+              <div className="w-[70rem] justify-center">
                 <Pagination
                   count={products?.totalPages || 1}
                   color="secondary"
