@@ -1,12 +1,13 @@
 import React from "react";
 import Achievement from "./Achievement";
 import MonthlyOverview from "./MonthlyOverview";
-import ProductsTable from "./ProductsTable";
+import OrderTableView from "./View/OrderTableView";
+import ProductTableView from "./View/ProductTableView";
 
 const Dashboard = () => {
   return (
     <div className="p-10">
-      <div className="flex gap-5 w-full">
+      <div className="flex gap-5 w-full ">
         {/* Left column (1/3) */}
         <div className="w-1/3">
           <Achievement />
@@ -19,8 +20,12 @@ const Dashboard = () => {
       </div>
 
       {/* Full width section for ProductsTable */}
-      <div className="w-full mt-6">
-        <ProductsTable />
+      <div className="w-full mt-6 shadow-lg shadow-gray-400 rounded-lg">
+        <OrderTableView />
+      </div>
+
+      <div className="w-full mt-6 shadow-lg shadow-gray-400 rounded-lg">
+        <ProductTableView />
       </div>
     </div>
   );

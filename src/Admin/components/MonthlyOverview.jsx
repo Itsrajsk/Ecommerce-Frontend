@@ -72,7 +72,7 @@ const renderStats = () => {
 
 const MonthlyOverview = () => {
   return (
-    <Card className="border border-gray-300">
+    <Card className="border border-gray-300" sx={{ borderRadius: "10px" }}>
       <CardHeader
         className="mt-2"
         title="Monthly Overview"

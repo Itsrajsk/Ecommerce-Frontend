@@ -80,7 +80,7 @@ const Admin = () => {
   return (
     <div className="relative flex h-[100vh]">
       <CssBaseline />
-      <div className="w-[15%] border-r border-r-gray-300 h-full fixed">
+      <div className="shadow-lg shadow-gray-400 w-[15%] border-r border-r-gray-300 h-full fixed">
         {drawer}
       </div>
 

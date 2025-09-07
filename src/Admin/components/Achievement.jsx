@@ -15,8 +15,13 @@ const TrophyImg = styled("img")({
 const Achievement = () => {
   return (
     <Card
-      className="border border-gray-300 h-[12rem]"
-      sx={{ position: "relative", display: "flex", flexDirection: "column" }}
+      className="border border-gray-300 h-[12rem] "
+      sx={{
+        position: "relative",
+        display: "flex",
+        flexDirection: "column",
+        borderRadius: "10px",
+      }}
     >
       <CardContent
         sx={{
@@ -28,10 +33,7 @@ const Achievement = () => {
       >
         {/* Top Section */}
         <div>
-          <Typography
-            variant="h5"
-            sx={{  letterSpacing: "1.2px" }}
-          >
+          <Typography variant="h5" sx={{ letterSpacing: "1.2px" }}>
             Ecommerce
           </Typography>
           <Typography variant="body1" sx={{ mb: 1 }}>
